@@ -72,10 +72,11 @@ function zghl_filmplace_startseite()
     <div id="app">
 
         <nav>
-            <div id="previewImage">
-                <img src="http://localhost/wp-content/uploads/2023/02/ansicht1.png"/>
+            <div id="previewImage" :class="{previewVisible:previewVisible, pageVisible:pageVisible}"
+                 @click="hidePreview();hidePage()">
+                <img src="http://localhost/wp-content/uploads/2023/02/ansicht1.png" id="frontImage" alt="Ansicht">
                 <img v-for="page in pages" :src="page.thumbnail"
-                     :class="{visible:(preview && previewPage.ID == page.ID) || (!preview && pageVisible && currentPage.ID == page.ID), previewThumbnail: true}"/>
+                     :class="{visible:(previewPage.ID == page.ID && previewVisible) || (!previewVisible && pageVisible && currentPage.ID == page.ID), previewThumbnail: true}"/>
             </div>
 
             <aside>
@@ -91,6 +92,12 @@ function zghl_filmplace_startseite()
                 </div>
                 <div id="previewText" :class="{visible:pageVisible}">
                     <div v-html="currentPage.post_content"></div>
+                    <a @click="viewMore()" class="viewMore">Mehr erfahren</a>
+                    <?php
+                    if (current_user_can("edit_posts")) {
+                        echo "<a :href=\"'/wp-admin/post.php?post='+currentPage.ID+'&action=edit'\" target='_blank'>Seite Bearbeiten</a>";
+                    }
+                    ?>
                 </div>
             </aside>
         </nav>
@@ -123,10 +130,10 @@ function zghl_filmplace_startseite()
                 },
                 previewThePage(index) {
                     this.previewPageIndex = index;
-                    this.preview = true;
+                    this.previewVisible = true;
                 },
                 hidePreview() {
-                    this.preview = false;
+                    this.previewVisible = false;
                 },
                 hidePage() {
                     this.pageVisible = false;
@@ -143,139 +150,6 @@ function zghl_filmplace_startseite()
         }).mount('#app')
     </script>
 
-    <style>
-        #app {
-            position: absolute;
-
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-
-            overflow: hidden;
-        }
-
-        #app * {
-            box-sizing: border-box;
-        }
-
-        #app nav {
-            width: 100%;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: stretch;
-        }
-
-        #app nav aside {
-            width: 300px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: stretch;
-            position: absolute;
-            right: 0;
-            height: 100%;
-        }
-
-        #app nav aside ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            margin-top: 50px;
-            transition: .5s;
-        }
-
-        #app nav aside ul.collapsed {
-            margin-top: -30px;
-            pointer-events: none;
-        }
-
-        #app nav aside ul.collapsed li:not(.active) {
-            height: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-            opacity: 0;
-        }
-
-        #app nav aside ul li {
-            padding: 15px;
-            cursor: pointer;
-            display: block;
-            text-align: center;
-            font-weight: 700;
-            font-size: 2em;
-            opacity: 1;
-
-            /* have a little 3d deformation */
-            transform: skew(-6deg, -3deg);
-            transition: transform 0.5s, color 0.2s, height 0.5s, padding 0.5s;
-
-        }
-
-        #app nav aside ul li:hover {
-            opacity: .7;
-        }
-
-        #app nav aside ul li.active {
-            color: #c00;
-        }
-
-        #app nav #previewImage {
-            width: calc(100% - 200px);
-            height: 100vh;
-        }
-
-        #logo:hover {
-            cursor: pointer;
-            opacity: .7;
-        }
-
-        #app nav #previewImage img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-        }
-
-        #hidden_preload {
-            display: none;
-        }
-
-        #app .previewThumbnail {
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-
-        #app .visible.previewThumbnail {
-            opacity: 1;
-        }
-
-        #app #previewText {
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: #fff;
-            transform: translate(0, 100px) skew(-3deg, -1deg);
-            opacity: 0;
-            pointer-events: none;
-            flex: 1;
-            transition: 0.4s all;
-
-        }
-
-        #app #previewText.visible {
-            transform: translate(0, 0);
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-
-    </style>
     <?php
     return ob_get_clean();
 }

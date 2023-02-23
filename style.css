@@ -23,10 +23,7 @@ Text Domain: ziegenhagel-media
 /* define variables */
 :root {
     /* define COLORS */
-    --color-primary: #83057D;
-    --color-primary-darker: #5C0367;
-    --color-secondary: #FDA30C;
-    --color-tertiary: #fff;
+    --color-primary: #ff0000;
     /* define FONTS */
     --font-primary: 'Inter', sans-serif;
     --font-secondary: 'Montserrat', sans-serif;
@@ -50,8 +47,215 @@ body {
 
 #logo {
     height: 50px;
-    margin-top:40px;
-    width:300px;
+    margin-top: 40px;
+    width: 300px;
     object-position: center;
     object-fit: contain;
+}
+
+.container {
+    margin: 0 auto;
+    padding: 30px 20px;
+    overflow: auto;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 0 10px;
+}
+
+footer:not(.front-page) {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+footer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+footer ul li {
+    display: inline-block;
+    padding: 10px 10px;
+}
+
+footer ul li a {
+    color: #bbbbbb;
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: #333333;
+}
+
+body a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+#app {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    overflow: hidden;
+}
+
+#app * {
+    box-sizing: border-box;
+}
+
+#app nav {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+#app nav aside {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    position: absolute;
+    right: 0;
+    height: 100%;
+}
+
+#app nav aside ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    margin: 50px 0 0;
+    transition: .5s;
+}
+
+#app nav aside ul.collapsed {
+    margin-top: -30px;
+    pointer-events: none;
+}
+
+#app nav aside ul.collapsed li:not(.active) {
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+}
+
+#app nav aside ul li {
+    padding: 15px;
+    cursor: pointer;
+    display: block;
+    text-align: center;
+    font-weight: 700;
+    font-size: 2em;
+    opacity: 1;
+
+    /* have a little 3d deformation */
+    transform: skew(-6deg, -3deg);
+    transition: transform 0.5s, color 0.2s, height 0.5s, padding 0.5s;
+
+}
+
+#app nav aside ul li:hover {
+    opacity: .6;
+}
+
+#app nav aside ul li.active {
+    color: #c00;
+    opacity: 1 !important;
+}
+
+#app nav #previewImage {
+    width: calc(100% - 200px);
+    height: 100vh;
+}
+
+#logo:hover {
+    cursor: pointer;
+    opacity: .7;
+}
+
+#app nav #previewImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+}
+
+#hidden_preload {
+    display: none;
+}
+
+
+#app #previewText {
+    padding: 0 20px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff;
+    transform: translate(0, 100px) skew(-3deg, -1deg);
+    opacity: 0;
+    pointer-events: none;
+    flex: 1;
+    transition: 0.4s all;
+
+}
+
+#app #previewText.visible {
+    transform: translate(0, 0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#app #previewText a {
+    margin: 10px 0;
+    padding: 4px 0;
+    color: white;
+    display: block;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+#app #previewText a::after {
+    content: "»";
+    padding-left: 5px;
+}
+
+#app #previewText a:hover {
+    opacity: .8;
+}
+
+#previewImage.pageVisible:hover {
+    cursor: pointer;
+    opacity: .8;
+}
+
+#previewImage:hover img:not(#frontImage) {
+    opacity: 0;
+}
+
+#previewImage:not(.previewVisible):not(.pageVisible) .previewThumbnail:not(.visible) {
+    opacity: 0;
+}
+
+#app .previewThumbnail {
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+#app .visible.previewThumbnail {
+    opacity: 1;
 }
