@@ -63,6 +63,23 @@ function zghl_filmplace_startseite()
     ));
     $pages = array_map(function ($page) {
         $page->thumbnail = get_the_post_thumbnail_url($page->ID, 'original');
+
+        // get the children of the page
+        $page->children = get_pages(array(
+            'child_of' => $page->ID,
+            'parent' => $page->ID,
+            'sort_column' => 'menu_order',
+            'sort_order' => 'ASC',
+            'hierarchical' => 0,
+            'meta_key' => '_thumbnail_id',
+            'meta_value' => '',
+            'meta_compare' => '!=',
+        ));
+        $page->children = array_map(function ($child) {
+            $child->thumbnail = get_the_post_thumbnail_url($child->ID, 'custom-thumbnail');
+            return $child;
+        }, $page->children);
+
         return $page;
     }, $pages);
 
@@ -71,18 +88,27 @@ function zghl_filmplace_startseite()
 
     <div id="app">
 
-        <nav>
+        <nav :class="{pageVisible, childrenVisible, previewVisible}">
             <div id="previewImage"
-                 :class="{hoverable:pageVisible,previewVisible:previewVisible, pageVisible:pageVisible}"
-                 @click="hidePreview();hidePage()">
+                 :class="{hoverable:pageVisible,previewVisible:previewVisible, pageVisible:pageVisible, childrenVisible:childrenVisible}"
+                 @click="reset()">
+
+                <!-- background village -->
                 <img src="/wp-content/uploads/2023/02/map.jpg" id="frontImage" alt="Ansicht">
+
+                <!-- red overlays -->
                 <img v-for="page in pages" :src="page.thumbnail"
                      :class="{visible:(previewPage.ID == page.ID && previewVisible) || (!previewVisible && pageVisible && currentPage.ID == page.ID), previewThumbnail: true}"/>
+
+                <!-- children -->
+                <img v-for="child in currentPage.children" :src="currentChild.thumbnail" v-if="childrenVisible"
+                     :class="{visible: currentChild.ID == child.ID}"/>
+
             </div>
 
             <aside>
                 <div class="menu">
-                    <img @click="hidePage()" id="logo" src="/wp-content/uploads/2023/02/Logo-1.png"
+                    <img @click="reset();" id="logo" src="http://localhost/wp-content/uploads/2023/02/filmplace.png"
                          class="hoverable"
                          alt="Logo">
                     <ul :class="{collapsed:pageVisible}">
@@ -93,13 +119,29 @@ function zghl_filmplace_startseite()
                     </ul>
                 </div>
                 <div id="previewText" :class="{visible:pageVisible}">
-                    <div v-html="currentPage.post_content"></div>
-                    <a @click="viewMore()" class="viewMore">Mehr erfahren</a>
-                    <?php
-                    if (current_user_can("edit_posts")) {
-                        echo "<a :href=\"'/wp-admin/post.php?post='+currentPage.ID+'&action=edit'\" target='_blank'>Seite Bearbeiten</a>";
-                    }
-                    ?>
+                    <div v-if="childrenVisible">
+                        <h1>{{currentChild.post_title}}</h1>
+                        <div v-html="currentChild.post_content"></div>
+                        <div class="btns">
+                            <a @click="prevChild()" v-if="hasPrevChild" class="viewMore">« Zurück</a>
+                            <?php
+                            if (current_user_can("edit_posts")) {
+                                echo "<a :href=\"'/wp-admin/post.php?post='+currentChild.ID+'&action=edit'\" target='_blank'>[Bearbeiten]</a>";
+                            }
+                            ?>
+                            <a @click="nextChild()" v-if="hasNextChild" class="viewMore">Weiter »</a>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <div v-html="currentPage.post_content"></div>
+                        <a @click="viewChildren()" v-if="currentPage.children.length > 0" class="viewMore">Mehr erfahren »</a>
+
+                        <?php
+                        if (current_user_can("edit_posts")) {
+                            echo "<a :href=\"'/wp-admin/post.php?post='+currentPage.ID+'&action=edit'\" target='_blank'>[Bearbeiten]</a>";
+                        }
+                        ?>
+                    </div>
                 </div>
             </aside>
         </nav>
@@ -122,7 +164,9 @@ function zghl_filmplace_startseite()
                     currentPageIndex: 0,
                     previewPageIndex: 0,
                     previewVisible: false,
-                    pageVisible: false
+                    pageVisible: false,
+                    childrenVisible: false,
+                    currentChildIndex: 0,
                 }
             },
             methods: {
@@ -139,6 +183,28 @@ function zghl_filmplace_startseite()
                 },
                 hidePage() {
                     this.pageVisible = false;
+                },
+                viewChildren() {
+                    this.currentChildIndex = 0;
+                    this.childrenVisible = true;
+                },
+                hideChildren() {
+                    this.childrenVisible = false;
+                },
+                reset() {
+                    this.hideChildren();
+                    this.hidePage();
+                    this.hidePreview();
+                },
+                nextChild() {
+                    if (this.currentChildIndex < this.currentPage.children.length - 1) {
+                        this.currentChildIndex++;
+                    }
+                },
+                prevChild() {
+                    if (this.currentChildIndex > 0) {
+                        this.currentChildIndex--;
+                    }
                 }
             },
             computed: {
@@ -147,6 +213,15 @@ function zghl_filmplace_startseite()
                 },
                 previewPage() {
                     return this.pages[this.previewPageIndex];
+                },
+                currentChild() {
+                    return this.currentPage.children[this.currentChildIndex];
+                },
+                hasNextChild() {
+                    return this.currentChildIndex < this.currentPage.children.length - 1;
+                },
+                hasPrevChild() {
+                    return this.currentChildIndex > 0;
                 }
             }
         }).mount('#app')
