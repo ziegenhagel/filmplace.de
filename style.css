@@ -55,7 +55,7 @@ body {
 #logo {
     height: 50px;
     margin-top: 40px;
-    width: 300px;
+    width: 100%;
     object-position: center;
     object-fit: contain;
 }
@@ -92,6 +92,7 @@ footer ul li {
 
 footer ul li a {
     color: #bbbbbb;
+    text-shadow: 0 0 30px #fff;
     text-decoration: none;
     font-weight: bold;
 }
