@@ -259,3 +259,51 @@ body a {
 #app .visible.previewThumbnail {
     opacity: 1;
 }
+
+#custom-cursor.visible {
+    opacity: 1;
+    width: 15px;
+    height: 15px;
+}
+
+#custom-cursor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: #c00;
+    background: gray;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    border-radius: 50%;
+    z-index: 9999;
+    transition: 0.1s height, 0.1s width, opacity 1s;
+    opacity: 0;
+}
+
+#app, #app * {
+    cursor: none !important;
+}
+
+#app {
+    opacity: 0;
+    transition: 1.3s opacity;
+    transition-delay: .4s;
+}
+
+#app.visible {
+    opacity: 1;
+}
+
+#custom-cursor.hover {
+    background: #c00;
+    width: 20px;
+    height: 20px;
+}
+
+#custom-cursor.hover.expand {
+    width: 50px;
+    height: 50px;
+}

@@ -81,7 +81,7 @@ function zghl_filmplace_startseite()
 
             <aside>
                 <div class="menu">
-                    <img @click="hidePage()" id="logo" src="http://localhost/wp-content/uploads/2023/02/logo.png"
+                    <img @click="hidePage()" id="logo" src="http://localhost/wp-content/uploads/2023/02/logo.png" class="hoverable"
                          alt="Logo">
                     <ul :class="{collapsed:pageVisible}">
                         <li v-for="(page,index) in pages" @click="setPage(index)" @mouseenter="previewThePage(index)"
