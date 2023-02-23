@@ -11,13 +11,21 @@ Requires PHP: 7.0
 Text Domain: ziegenhagel-media
 */
 
-/* load font from file "inter" */
+/* load Poppins Regular */
 @font-face {
-    font-family: 'Inter';
+    font-family: 'Poppins';
     font-style: normal;
-    font-weight: 100 900;
+    font-weight: 100;
     font-display: swap;
-    src: url('fonts/inter.ttf');
+    src: url('fonts/Poppins-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('fonts/Poppins-SemiBold.ttf');
 }
 
 /* define variables */
@@ -25,8 +33,7 @@ Text Domain: ziegenhagel-media
     /* define COLORS */
     --color-primary: #ff0000;
     /* define FONTS */
-    --font-primary: 'Inter', sans-serif;
-    --font-secondary: 'Montserrat', sans-serif;
+    --font-primary: 'Poppins', sans-serif;
     /* define SIZES */
     --border-radius: 13px;
 }
@@ -86,6 +93,7 @@ footer ul li {
 footer ul li a {
     color: #bbbbbb;
     text-decoration: none;
+    font-weight: bold;
 }
 
 footer a:hover {
@@ -176,9 +184,12 @@ body a {
     opacity: 1 !important;
 }
 
-#app nav #previewImage {
-    width: calc(100% - 200px);
+#previewImage {
+    width: calc(100% - 00px);
     height: 100vh;
+    margin-left: 0px;
+    transition: .4s;
+    scale: 1;
 }
 
 #logo:hover {
@@ -238,9 +249,15 @@ body a {
     opacity: .8;
 }
 
+#previewImage.pageVisible {
+    transition: 0.5s all;
+    scale: 1.1;
+}
+
 #previewImage.pageVisible:hover {
     cursor: pointer;
-    opacity: .8;
+    opacity: .5;
+    scale: 1;
 }
 
 #previewImage:hover img:not(#frontImage) {
@@ -279,9 +296,32 @@ body a {
     pointer-events: none;
     border-radius: 50%;
     z-index: 9999;
-    transition: 0.1s height, 0.1s width, opacity 1s;
+    transition: 0.1s height, 0.1s width, opacity 2s;
+    animation: red-record-button-blinking-intro 1s ease-in-out alternate;
     opacity: 0;
 }
+
+/* the button should blink four times and then stay visible */
+@keyframes red-record-button-blinking-intro {
+    0% {
+        opacity: 0;
+        background: red;
+    }
+    25% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    75% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        background: red;
+    }
+}
+
 
 #app, #app * {
     cursor: none !important;
@@ -289,8 +329,8 @@ body a {
 
 #app {
     opacity: 0;
-    transition: 1.3s opacity;
-    transition-delay: .4s;
+    transition: 1.9s opacity;
+    transition-delay: 1.3s;
 }
 
 #app.visible {

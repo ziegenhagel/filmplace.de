@@ -62,7 +62,7 @@ function zghl_filmplace_startseite()
         'meta_compare' => '!=',
     ));
     $pages = array_map(function ($page) {
-        $page->thumbnail = get_the_post_thumbnail_url($page->ID, 'custom-thumbnail');
+        $page->thumbnail = get_the_post_thumbnail_url($page->ID, 'original');
         return $page;
     }, $pages);
 
@@ -72,16 +72,18 @@ function zghl_filmplace_startseite()
     <div id="app">
 
         <nav>
-            <div id="previewImage" :class="{previewVisible:previewVisible, pageVisible:pageVisible}"
+            <div id="previewImage"
+                 :class="{hoverable:pageVisible,previewVisible:previewVisible, pageVisible:pageVisible}"
                  @click="hidePreview();hidePage()">
-                <img src="http://localhost/wp-content/uploads/2023/02/ansicht1.png" id="frontImage" alt="Ansicht">
+                <img src="/wp-content/uploads/2023/02/map.jpg" id="frontImage" alt="Ansicht">
                 <img v-for="page in pages" :src="page.thumbnail"
                      :class="{visible:(previewPage.ID == page.ID && previewVisible) || (!previewVisible && pageVisible && currentPage.ID == page.ID), previewThumbnail: true}"/>
             </div>
 
             <aside>
                 <div class="menu">
-                    <img @click="hidePage()" id="logo" src="http://localhost/wp-content/uploads/2023/02/logo.png" class="hoverable"
+                    <img @click="hidePage()" id="logo" src="/wp-content/uploads/2023/02/Logo-1.png"
+                         class="hoverable"
                          alt="Logo">
                     <ul :class="{collapsed:pageVisible}">
                         <li v-for="(page,index) in pages" @click="setPage(index)" @mouseenter="previewThePage(index)"
@@ -151,5 +153,18 @@ function zghl_filmplace_startseite()
     </script>
 
     <?php
+
+    // no app loading delay for admins
+    if (current_user_can("edit_posts")) {
+        ?>
+        <style>
+            #app, #custom-cursor {
+                opacity: 1 !important;
+                animation: none !important;
+            }
+        </style>
+        <?php
+    }
+
     return ob_get_clean();
 }
