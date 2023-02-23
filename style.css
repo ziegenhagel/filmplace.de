@@ -34,6 +34,10 @@ Text Domain: ziegenhagel-media
     --border-radius: 13px;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: var(--font-primary);
     margin: 0;
@@ -44,13 +48,10 @@ body {
     font-family: var(--font-primary);
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0px auto;
-}
-
-@media (max-width: 1300px) {
-    .container {
-        padding: 0 40px;
-    }
+#logo {
+    height: 50px;
+    margin-top:40px;
+    width:300px;
+    object-position: center;
+    object-fit: contain;
 }
