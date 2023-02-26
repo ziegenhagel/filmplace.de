@@ -86,12 +86,31 @@ function zghl_filmplace_startseite()
     ?>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
+    <noscript>
+        <style>
+            #app, #custom-cursor {
+                opacity: 1 !important;
+                animation: none !important;
+            }
+
+            #app, #app * {
+                cursor: auto !important;
+            }
+        </style>
+    </noscript>
+
+
     <div id="app">
+
 
         <nav :class="{pageVisible, childrenVisible, previewVisible}">
             <div id="previewImage"
                  :class="{hoverable:pageVisible,previewVisible:previewVisible, pageVisible:pageVisible, childrenVisible:childrenVisible}"
                  @click="reset()">
+
+                <!-- go back text
+                <div class="popover"> Zurück zur Startseite</div>
+                -->
 
                 <!-- background village -->
                 <img src="/wp-content/uploads/2023/02/map.jpg" id="frontImage" alt="Ansicht">
@@ -116,6 +135,14 @@ function zghl_filmplace_startseite()
                             @mouseleave="hidePreview()" :class="{active:currentPageIndex == index && pageVisible}">
                             {{page.post_title}}
                         </li>
+                        <noscript>
+                            <style>aside .menu ul li:not(.noscript ) { display:none !important }</style>
+                            <?php
+                            foreach ($pages as $page) {
+                                echo "<li class='noscript'><a href='" . get_permalink($page->ID) . "'>" . $page->post_title . "</a></li>";
+                            }
+                            ?>
+                        </noscript>
                     </ul>
                 </div>
                 <div id="previewText" :class="{visible:pageVisible}">
@@ -134,7 +161,8 @@ function zghl_filmplace_startseite()
                     </div>
                     <div v-else>
                         <div v-html="currentPage.post_content"></div>
-                        <a @click="viewChildren()" v-if="currentPage.children.length > 0" class="viewMore">Mehr erfahren »</a>
+                        <a @click="viewChildren()" v-if="currentPage.children.length > 0" class="viewMore">Mehr erfahren
+                            »</a>
 
                         <?php
                         if (current_user_can("edit_posts")) {
